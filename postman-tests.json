@@ -1,0 +1,126 @@
+# 🧪 JSONs para Teste no Postman
+
+## 📝 1. REGISTRO DE USUÁRIO
+**Método:** POST  
+**URL:** `http://localhost:777/api/auth/register`  
+**Headers:** `Content-Type: application/json`
+
+```json
+{
+  "nome_completo": "João Silva Santos",
+  "email": "joao.silva@email.com",
+  "telefone": "(11) 99999-9999",
+  "cpf": "12345678901",
+  "senha": "123456"
+}
+```
+
+---
+
+## 🔐 2. LOGIN DE USUÁRIO
+**Método:** POST  
+**URL:** `http://localhost:777/api/auth/login`  
+**Headers:** `Content-Type: application/json`
+
+```json
+{
+  "email": "joao.silva@email.com",
+  "senha": "123456"
+}
+```
+
+---
+
+## 👤 3. BUSCAR PERFIL (PROTEGIDO)
+**Método:** GET  
+**URL:** `http://localhost:777/api/auth/profile`  
+**Headers:** 
+- `Content-Type: application/json`
+- `Authorization: Bearer SEU_TOKEN_AQUI`
+
+*Sem body - apenas headers*
+
+---
+
+## 🏥 4. HEALTH CHECK
+**Método:** GET  
+**URL:** `http://localhost:777/api/health`  
+**Headers:** `Content-Type: application/json`
+
+*Sem body - apenas para testar se o servidor está funcionando*
+
+---
+
+## 📋 INSTRUÇÕES DE TESTE:
+
+### Passo 1: Teste o Health Check
+- Faça uma requisição GET para `/api/health`
+- Deve retornar status 200 com mensagem de sucesso
+
+### Passo 2: Registre um usuário
+- Use o JSON de registro acima
+- Deve retornar status 201 com token JWT
+- **COPIE O TOKEN** da resposta
+
+### Passo 3: Teste o Login
+- Use o JSON de login acima
+- Deve retornar status 200 com token JWT
+- **COPIE O TOKEN** da resposta
+
+### Passo 4: Teste o Perfil
+- Use o token copiado no header Authorization
+- Deve retornar status 200 com dados do usuário
+
+---
+
+## ⚠️ VALIDAÇÕES IMPORTANTES:
+
+### Email:
+- Deve ser um email válido
+- Deve ser único (não pode repetir)
+
+### Telefone:
+- Formato: `(11) 99999-9999`
+- Exemplo válido: `(11) 98765-4321`
+
+### CPF:
+- Deve ter exatamente 11 dígitos
+- Deve ser único (não pode repetir)
+- Exemplo válido: `12345678901`
+
+### Senha:
+- Mínimo 6 caracteres
+- Exemplo válido: `123456`
+
+### Nome:
+- Mínimo 2 caracteres
+- Máximo 100 caracteres
+- Exemplo válido: `João Silva Santos`
+
+---
+
+## 🔧 CONFIGURAÇÃO DO POSTMAN:
+
+1. **Crie uma Collection** chamada "Boleto Pago API"
+2. **Configure a Base URL:** `http://localhost:777/api`
+3. **Adicione as requisições** com os JSONs acima
+4. **Para o perfil**, configure o token JWT nas variáveis da collection
+
+### Variáveis da Collection:
+- `base_url`: `http://localhost:777/api`
+- `token`: `SEU_TOKEN_AQUI` (será preenchido automaticamente)
+
+---
+
+## 🚀 EXECUTAR O SERVIDOR:
+
+```bash
+npm run dev
+```
+
+O servidor deve iniciar na porta 777 e mostrar:
+```
+🚀 Servidor rodando na porta 777
+📡 Ambiente: development
+🌐 CORS Origin: https://boleto-pago-azul.lovable.app
+```
