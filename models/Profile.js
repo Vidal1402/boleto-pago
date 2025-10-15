@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 
 const profileSchema = new mongoose.Schema({
@@ -18,7 +19,13 @@ const profileSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Telefone é obrigatório'],
     trim: true,
-    match: [/^\(\d{2}\)\s\d{4,5}-\d{4}$/, 'Formato de telefone inválido. Use: (11) 99999-9999']
+    validate: {
+      validator: function(v) {
+        // Aceita tanto formato (11) 99999-9999 quanto apenas números
+        return /^(\(\d{2}\)\s\d{4,5}-\d{4}|\d{10,11})$/.test(v);
+      },
+      message: 'Telefone deve ter formato (11) 99999-9999 ou apenas números (10-11 dígitos)'
+    }
   },
   cpf: {
     type: String,
@@ -31,11 +38,22 @@ const profileSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Middleware para formatar CPF (remover pontos e traços)
+// Middleware para formatar CPF e telefone
 profileSchema.pre('save', function(next) {
   if (this.cpf) {
     this.cpf = this.cpf.replace(/\D/g, '');
   }
+  
+  if (this.telefone) {
+    // Se telefone tem apenas números, formatar automaticamente
+    const numeros = this.telefone.replace(/\D/g, '');
+    if (numeros.length === 11) {
+      this.telefone = `(${numeros.substring(0,2)}) ${numeros.substring(2,7)}-${numeros.substring(7)}`;
+    } else if (numeros.length === 10) {
+      this.telefone = `(${numeros.substring(0,2)}) ${numeros.substring(2,6)}-${numeros.substring(6)}`;
+    }
+  }
+  
   next();
 });
 

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Profile = require('../models/Profile');
+const Dashboard = require('../models/Dashboard');
 
 // Gerar token JWT
 const generateToken = (userId) => {
@@ -44,6 +45,27 @@ const register = async (req, res) => {
       cpf
     });
     await profile.save();
+
+    // Criar dashboard automaticamente para o usuário
+    const dashboard = new Dashboard({
+      owner: user._id,
+      data: {
+        boletos: [],
+        configuracoes: {
+          tema: 'claro',
+          notificacoes: true,
+          idioma: 'pt-BR'
+        },
+        metas: [],
+        estatisticas: {
+          totalBoletos: 0,
+          boletosPagos: 0,
+          boletosPendentes: 0,
+          valorTotal: 0
+        }
+      }
+    });
+    await dashboard.save();
 
     // Gerar token
     const token = generateToken(user._id);
